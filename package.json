@@ -1,0 +1,16 @@
+{
+  "name": "engineering-unit-converter-api",
+  "version": "1.0.0",
+  "description": "REST API for engineering unit conversions across mechanical, electrical, thermal, flow, and material domains.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "helmet": "^7.1.0"
+  },
+  "devDependencies": {}
+}
