@@ -14,6 +14,7 @@ Built for the Archimedes Market bounty `MSN-00014`.
 - No external conversion API calls.
 - Dockerfile included for deployment.
 - Native Node.js test suite with 30+ conversion checks.
+- OpenAPI 3.0 specification in `openapi.yaml`.
 
 ## Supported Domains
 
@@ -49,6 +50,12 @@ docker run --rm -p 3000:3000 engineering-unit-converter-api
 ```
 
 ## API
+
+OpenAPI:
+
+```bash
+npm run lint:openapi
+```
 
 ### `GET /domains`
 

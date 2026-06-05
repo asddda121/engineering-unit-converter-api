@@ -1,0 +1,172 @@
+openapi: 3.0.3
+info:
+  title: Engineering Unit Converter API
+  version: 1.0.0
+  description: REST API for deterministic engineering unit conversions across mechanical, electrical, flow, thermal, mass, and material domains.
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit/
+servers:
+  - url: /
+security: []
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      security: []
+      summary: Health check
+      responses:
+        "200":
+          description: Service health payload
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, service]
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  service:
+                    type: string
+                    example: engineering-unit-converter-api
+        "400":
+          $ref: "#/components/responses/Error"
+  /domains:
+    get:
+      operationId: listDomains
+      security: []
+      summary: List supported conversion domains
+      responses:
+        "200":
+          description: Supported domains
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [domains]
+                properties:
+                  domains:
+                    type: array
+                    items:
+                      type: string
+                    example: [current, density, flow, force, length, mass, power, pressure, resistance, temperature, thermal, torque, voltage]
+        "400":
+          $ref: "#/components/responses/Error"
+  /units:
+    get:
+      operationId: listUnits
+      security: []
+      summary: List supported units
+      parameters:
+        - in: query
+          name: domain
+          required: false
+          schema:
+            type: string
+          description: Optional domain filter.
+          example: pressure
+      responses:
+        "200":
+          description: Units grouped by domain, or units for one domain when filtered.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    required: [domains]
+                    properties:
+                      domains:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                  - type: object
+                    required: [domain, units]
+                    properties:
+                      domain:
+                        type: string
+                        example: pressure
+                      units:
+                        type: array
+                        items:
+                          type: string
+                        example: [MPa, Pa, atm, bar, inHg, kPa, mbar, psi, torr]
+        "404":
+          $ref: "#/components/responses/Error"
+  /convert:
+    get:
+      operationId: convertUnit
+      security: []
+      summary: Convert a numeric value between units in one domain
+      parameters:
+        - in: query
+          name: domain
+          required: true
+          schema:
+            type: string
+          example: pressure
+        - in: query
+          name: from
+          required: true
+          schema:
+            type: string
+          example: bar
+        - in: query
+          name: to
+          required: true
+          schema:
+            type: string
+          example: kPa
+        - in: query
+          name: value
+          required: true
+          schema:
+            type: number
+            format: double
+          example: 2.5
+      responses:
+        "200":
+          description: Conversion result
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [domain, from, to, input, result]
+                properties:
+                  domain:
+                    type: string
+                    example: pressure
+                  from:
+                    type: string
+                    example: bar
+                  to:
+                    type: string
+                    example: kPa
+                  input:
+                    type: number
+                    example: 2.5
+                  result:
+                    type: number
+                    example: 250
+        "400":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+components:
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [error]
+            properties:
+              error:
+                type: string
+          examples:
+            unknownDomain:
+              value:
+                error: Unknown domain 'unknown'

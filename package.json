@@ -6,7 +6,8 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "lint:openapi": "npx @redocly/cli lint openapi.yaml"
   },
   "dependencies": {
     "express": "^4.19.2",
